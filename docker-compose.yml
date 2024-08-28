@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    container_name: stock_api_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: 'postgres'
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - stock_api_network
+
+  web:
+    build: .
+    container_name: stock_api_web
+    command: gunicorn --bind :8000 stock_api.wsgi:application
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      POLYGON_API_KEY: 'bmN7i7CrzrpKqFvgbB1fEaztCwZKSUjJ'
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+    depends_on:
+      - db
+    networks:
+      - stock_api_network
+
+volumes:
+  postgres_data:
+
+networks:
+  stock_api_network:
