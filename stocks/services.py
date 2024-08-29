@@ -11,7 +11,7 @@ def get_polygon_stock_data(stock_symbol, date):
     if response.status_code == 200:
         data = response.json()
         return {
-            'status': 'success',
+            'status': data['status'],
             'open': data['open'],
             'high': data['high'],
             'low': data['low'],

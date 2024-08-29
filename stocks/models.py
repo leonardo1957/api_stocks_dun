@@ -1,24 +1,31 @@
 from django.db import models
 
-class Competitor(models.Model):
-    name = models.CharField(max_length=255)
-    market_cap_currency = models.CharField(max_length=10)
-    market_cap_value = models.FloatField()
-
 class Stock(models.Model):
-    status = models.CharField(max_length=255)
-    purchased_amount = models.IntegerField(default=0)
-    purchased_status = models.CharField(max_length=255)
+    company_code = models.CharField(max_length=10, unique=True)
+    status = models.CharField(max_length=20)
+    purchased_amount = models.DecimalField(max_digits=12, decimal_places=2)
+    purchased_status = models.CharField(max_length=20)
     request_data = models.DateField()
-    company_code = models.CharField(max_length=10)
-    company_name = models.CharField(max_length=255)
-    open = models.FloatField()
-    high = models.FloatField()
-    low = models.FloatField()
-    close = models.FloatField()
-    five_days = models.FloatField()
-    one_month = models.FloatField()
-    three_months = models.FloatField()
-    year_to_date = models.FloatField()
-    one_year = models.FloatField()
-    competitors = models.ManyToManyField(Competitor)
+    company_name = models.CharField(max_length=100)
+    open = models.DecimalField(max_digits=12, decimal_places=2)
+    high = models.DecimalField(max_digits=12, decimal_places=2)
+    low = models.DecimalField(max_digits=12, decimal_places=2)
+    close = models.DecimalField(max_digits=12, decimal_places=2)
+    five_days = models.FloatField(null=True, blank=True)
+    one_month = models.FloatField(null=True, blank=True)
+    three_months = models.FloatField(null=True, blank=True)
+    year_to_date = models.FloatField(null=True, blank=True)
+    one_year = models.FloatField(null=True, blank=True)
+    competitors = models.ManyToManyField('Competitor', related_name='stocks', blank=True)
+
+    def __str__(self):
+        return self.company_name
+
+class Competitor(models.Model):
+    name = models.CharField(max_length=100)
+    market_cap_currency = models.CharField(max_length=10)
+    market_cap_value = models.DecimalField(max_digits=20, decimal_places=2)
+    stock = models.ForeignKey(Stock, related_name='competitor_set', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

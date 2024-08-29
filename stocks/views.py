@@ -9,17 +9,16 @@ from django.core.cache import cache
 from datetime import datetime
 
 @api_view(['GET'])
-def get_stock(request, stock_symbol):
+def get_stock(request, stock_symbol, date):
     cache_key = f'stock_data_{stock_symbol}'
     cached_data = cache.get(cache_key)
 
     if cached_data:
         return Response(cached_data)
 
-    today_date = datetime.now().strftime('%Y-%m-%d')
-    polygon_data = get_polygon_stock_data(stock_symbol, today_date)
+    polygon_data = get_polygon_stock_data(stock_symbol, date)
 
-    if polygon_data['status'] == 'success':
+    if polygon_data['status'] == 'OK':
         performance_data, competitors_data = scrape_marketwatch(stock_symbol)
 
         stock, created = Stock.objects.get_or_create(
@@ -28,7 +27,7 @@ def get_stock(request, stock_symbol):
                 'status': 'active',
                 'purchased_amount': 0,
                 'purchased_status': 'not purchased',
-                'request_data': today_date,
+                'request_data': date,
                 'company_name': stock_symbol.upper(),
                 'open': polygon_data['open'],
                 'high': polygon_data['high'],
@@ -42,9 +41,22 @@ def get_stock(request, stock_symbol):
             }
         )
 
-
         for competitor_data in competitors_data:
-            competitor, _ = Competitor.objects.get_or_create(**competitor_data)
+            competitor_data = {
+                'name': competitor_data['name'],
+                'market_cap_currency': competitor_data['market_cap']['currency'],
+                'market_cap_value': competitor_data['market_cap']['value'],
+                'stock': stock
+            }
+            
+            competitor, _ = Competitor.objects.get_or_create(
+                name=competitor_data['name'],
+                stock=competitor_data['stock'],
+                defaults={
+                    'market_cap_currency': competitor_data['market_cap_currency'],
+                    'market_cap_value': competitor_data['market_cap_value']
+                }
+            )
             stock.competitors.add(competitor)
 
         serializer = StockSerializer(stock)
