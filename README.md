@@ -122,5 +122,5 @@ The application will be available at [http://localhost:8000](http://localhost:80
 
 ## Available Endpoints
 
-- **GET /stock/{stock_symbol}/YYYY-mm-dd**: Returns the data for a specific stock
-- **POST /stock/{stock_symbol}**: Updates the purchased amount for the specified stock symbol
+- **GET /api/stock/{stock_symbol}/YYYY-mm-dd**: Returns the data for a specific stock
+- **POST /api/stock/{stock_symbol}**: Updates the purchased amount for the specified stock symbol
