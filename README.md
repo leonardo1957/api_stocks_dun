@@ -57,6 +57,13 @@ cd api_stocks_dun
 
 ### 2. Configure the Database
 
+Create a database postgres, running in local:
+
+```bash
+docker run --name postgres -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16.0
+```
+
+
 Set up the PostgreSQL database and add the configuration in the `stock_api/settings.py` file:
 
 ```python
