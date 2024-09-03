@@ -1,4 +1,4 @@
-#!/home/leonardo-vieira/projetos/stock_api/venv/bin/python3
+#!/home/leonardo-vieira/projetos/stock_api/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

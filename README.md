@@ -113,14 +113,9 @@ If you prefer to run the application in a Docker container:
 1. **Build the Docker Image**:
 
    ```bash
-   docker build -t stock-api .
+   docker-compose up --build
    ```
 
-2. **Run the Container**:
-
-   ```bash
-   docker run -p 8000:8000 stock-api
-   ```
 
 The application will be available at [http://localhost:8000](http://localhost:8000)
 
